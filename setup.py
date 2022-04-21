@@ -40,5 +40,5 @@ setup(name="KrawArranger",
           "Topic :: Multimedia"],
       packages=["krawarranger", ],
       python_requires='>=3.9',
-      install_requires=['kmarotools @ git+https://github.com/fjmaro/KmaroTools@main', ]
+      install_requires=['kjmarotools @ git+https://github.com/fjmaro/KjmaroTools@main', ]
       )
