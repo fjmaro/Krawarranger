@@ -8,7 +8,7 @@ from typing import Tuple, List
 from logging import Logger
 from pathlib import Path
 
-from kjmarotools.basics import filetools, logtools
+from kjmarotools.basics import filetools, logtools, ostools
 
 from .rawerrors import folders_error, files_error
 
@@ -49,6 +49,7 @@ class RawArranger:
         self._folders_pos_tree: List[Path]
         self._folders_neg_tree: List[Path]
         self._abs_files2move: List[Path]
+        self._md5: List[str] = []
 
     def check_folders_tree_integrity(self) -> List[Path]:
         """
@@ -127,25 +128,44 @@ class RawArranger:
         """
         imsg = f"{self.LPHS}Moving negative files to its destination %s"
         self.log.info(imsg, "folder...")
+        for fle2move in self._abs_files2move:
+            self._md5.append(ostools.md5checksum(fle2move))
         paths2create = filetools.get_folders_from_files(self._abs_files2move)
         rel_paths2create = [x.relative_to(
             self.pos_base_path) for x in paths2create]
         rel_files2move = [x.relative_to(
             self.pos_base_path) for x in self._abs_files2move]
 
-        rel_flds_crted = filetools.replicate_folders_in_path(
-            rel_paths2create, self.neg_base_path)
-        self.log.info(f"{self.LRES}Total folders created = %s",
-                      len(rel_flds_crted))
-        for folder in rel_flds_crted:
-            self.log.info("[RWA] [FolderCreated]: %s", folder)
+        filetools.replicate_folders_in_path(
+            rel_paths2create, self.neg_base_path,
+            self.log, "[RWA] [FolderCreated]")
 
-        rel_moved_files = filetools.move_files2destination(
-            rel_files2move, self.pos_base_path, self.neg_base_path)
-        self.log.info(f"{self.LRES}Total files moved = %s",
-                      len(rel_moved_files))
-        for filmved in rel_moved_files:
-            self.log.info("[RWA] [FileMoved]: %s", filmved)
+        filetools.move_files2destination(
+            rel_files2move, self.pos_base_path, self.neg_base_path,
+            self.log, "[RWA] [FileMoved]")
+
+    def verify_integrity(self) -> bool:
+        """
+        ----------------------------------------------------------------------
+        Verify that all the files moved are not damaged
+        ----------------------------------------------------------------------
+        """
+        self.log.info(f"{self.LPHS}Checking files integrity...")
+        filesmoved = [self.neg_base_path.joinpath(x.relative_to(
+            self.pos_base_path)) for x in self._abs_files2move]
+        md5_fails = False
+        for idx, fle2move in enumerate(filesmoved):
+            if self._md5[idx] != ostools.md5checksum(fle2move):
+                md5_fails = True
+                damaged = fle2move.relative_to(self.neg_base_path)
+                self.log.warning(f"[RWA] [Integrity] Failure for '{damaged}'")
+        if not md5_fails:
+            self.log.info("[RWA] [Integrity] Files integrity verified")
+        else:
+            err_msg = "[RWA] [Integrity] Integrity check failed!! "
+            err_msg += "Use a backup to recover the original files damaged"
+            self.log.error(err_msg)
+        return md5_fails
 
     def run(self, embedded=False) -> bool:
         """
@@ -164,7 +184,7 @@ class RawArranger:
         self.log.info(f"[RWA] <CNFG> fld_patterns = {self.fld_patterns}")
         self.log.info(f"[RWA] <CNFG> pos_base_path = {self.pos_base_path}")
         self.log.info(f"[RWA] <CNFG> neg_base_path = {self.neg_base_path}")
-        self.log.info("[RWA] <TAGS> [FolderCreated] [FileMoved]")
+        self.log.info("[RWA] <TAGS> [FolderCreated] [FileMoved] [Integrity]")
 
         if self.check_folders_tree_integrity():
             input(folders_error(self.log))
@@ -175,9 +195,18 @@ class RawArranger:
             return True
 
         self.move_neg_files_to_neg_folder()
+        integrity_failed = self.verify_integrity()
+
         if not embedded:
-            input("\nPROCESS FINALIZED\n\t\tPRESS ENTER TO RESUME")
-        return False
+            if integrity_failed:
+                print("+------------------------+")
+                print("|        WARNING         |")
+                print("+------------------------+")
+                print("| Integrity check failed |")
+                print("| see log for more info. |")
+                print("+------------------------+")
+            input("\nPROCESS FINALIZED\n\n\t\tPRESS ENTER TO RESUME")
+        return integrity_failed
 
 
 if __name__ == "__main__":
