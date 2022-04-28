@@ -136,13 +136,18 @@ class RawArranger:
         rel_files2move = [x.relative_to(
             self.pos_base_path) for x in self._abs_files2move]
 
-        filetools.replicate_folders_in_path(
+        folders_created = filetools.replicate_folders_in_path(
             rel_paths2create, self.neg_base_path,
             self.log, "[RWA] [FolderCreated]")
 
-        filetools.move_files2destination(
+        files_moved = filetools.move_files2destination(
             rel_files2move, self.pos_base_path, self.neg_base_path,
             self.log, "[RWA] [FileMoved]")
+
+        self.log.info(f"{self.LRES}Total folders created = %s",
+                      len(folders_created))
+        self.log.info(f"{self.LRES}Total files moved = %s",
+                      len(files_moved))
 
     def verify_integrity(self) -> bool:
         """
