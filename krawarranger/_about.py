@@ -20,7 +20,7 @@ __copyright__ = f"2022 {__author__}"
 
 # Python and package requirements
 PYTHON_REQUIRES = ">=3.9, <4"
-INSTALL_REQUIRES = ['kjmarotools @ git+https://github.com/fjmaro/Kjmarotools@v1.0.2', ]
+INSTALL_REQUIRES = ['kjmarotools @ git+https://github.com/fjmaro/Kjmarotools@main', ]
 
 # PyPI classifiers with '__license__' included (https://pypi.org/classifiers/)
 CLASSIFIERS = [__license__,
