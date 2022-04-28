@@ -1,5 +1,7 @@
 # Apple
 .DS_Store
+negs_path/
+pos_path/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
