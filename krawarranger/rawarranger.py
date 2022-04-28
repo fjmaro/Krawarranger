@@ -186,19 +186,22 @@ class RawArranger:
         self.log.info(f"[RWA] <CNFG> neg_base_path = {self.neg_base_path}")
         self.log.info("[RWA] <TAGS> [FolderCreated] [FileMoved] [Integrity]")
 
-        if self.check_folders_tree_integrity():
-            input(folders_error(self.log))
-            return True
+        folds_chkerror = len(self.check_folders_tree_integrity()) > 0
+        files_chkerror = len(self.check_files_tree_integrity()) > 0
 
-        if self.check_files_tree_integrity():
-            input(files_error(self.log))
-            return True
+        if folds_chkerror:
+            print(folders_error(self.log))
 
-        self.move_neg_files_to_neg_folder()
-        integrity_failed = self.verify_integrity()
+        if files_chkerror:
+            print(files_error(self.log))
+
+        integrity_failed = False
+        if not folds_chkerror and not files_chkerror:
+            self.move_neg_files_to_neg_folder()
+            integrity_failed = self.verify_integrity()
 
         if not embedded:
-            if integrity_failed:
+            if folds_chkerror or files_chkerror or integrity_failed:
                 print("+------------------------+")
                 print("|        WARNING         |")
                 print("+------------------------+")
@@ -206,7 +209,7 @@ class RawArranger:
                 print("| see log for more info. |")
                 print("+------------------------+")
             input("\nPROCESS FINALIZED\n\n\t\tPRESS ENTER TO RESUME")
-        return integrity_failed
+        return folds_chkerror or files_chkerror or integrity_failed
 
 
 if __name__ == "__main__":
