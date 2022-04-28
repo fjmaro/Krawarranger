@@ -81,7 +81,7 @@ class RawArranger:
             self.log.warning(f"{self.LRES}Folder discrepances found = %s",
                              len(discrepances))
             for dscrp in discrepances:
-                self.log.warning("[RWA] [TreeError]" + str(dscrp))
+                self.log.warning("[RWA] [TreeError] " + str(dscrp))
         return discrepances
 
     def check_files_tree_integrity(self) -> List[Path]:
@@ -115,7 +115,7 @@ class RawArranger:
             wmsg = f"{self.LRES}Files already existing in negatives %s %s"
             self.log.warning(wmsg, "found =", len(discrepances))
             for dscrp in discrepances:
-                self.log.warning("[RWA] [FileExist]" + str(dscrp))
+                self.log.warning("[RWA] [FileExist] " + str(dscrp))
         return discrepances
 
     def move_neg_files_to_neg_folder(self) -> None:
