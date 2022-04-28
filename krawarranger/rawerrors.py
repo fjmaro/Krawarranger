@@ -9,7 +9,7 @@ def folders_error(logger: Logger) -> str:
     err_msg += "RULE: All the Negatives folders must exist in Origin."
     logger.error(err_msg)
     return_msg = "\nERROR: Mismatching folders found. See <RawArranger"
-    return_msg += ".log> for more info\n\t\tPRESS ENTER TO RESUME"
+    return_msg += ".log> for more info\n"
     return return_msg
 
 
@@ -20,7 +20,7 @@ def files_error(logger: Logger) -> str:
     err_msg += "executing the script."
     logger.error(err_msg)
     return_msg = "\nERROR: Duplicated files found. See <RawArranger.log> "
-    return_msg += "for more info\n\t\tPRESS ENTER TO RESUME"
+    return_msg += "for more info\n"
     return return_msg
 
 
@@ -30,5 +30,5 @@ def rawmove_error(logger: Logger) -> str:
     err_msg += "found. This is mainly caused due to permissions error"
     logger.error(err_msg)
     return_msg = "\nERROR: Negatives movement not completed. See <RawArranger."
-    return_msg += "log> for more info\n\t\tPRESS ENTER TO RESUME"
+    return_msg += "log> for more info\n"
     return return_msg
