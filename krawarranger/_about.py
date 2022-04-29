@@ -8,7 +8,7 @@ __all__ = ["__title__", "__summary__", "__uri__", "__version__",
 
 # Package title, version, short description and repository URL
 __title__ = "krawarranger"
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 __summary__ = "Python script for raw-photography and raw-media organization"
 __uri__ = f"https://github.com/fjmaro/{__title__.capitalize()}"  # Github Projet capitalized
 
