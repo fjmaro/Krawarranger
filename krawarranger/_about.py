@@ -8,7 +8,7 @@ __all__ = ["__title__", "__summary__", "__uri__", "__version__",
 
 # Package title, version, short description and repository URL
 __title__ = "krawarranger"
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 __summary__ = "Python script for raw-photography and raw-media organization"
 __uri__ = f"https://github.com/fjmaro/{__title__.capitalize()}"  # Github Projet capitalized
 
@@ -20,7 +20,7 @@ __copyright__ = f"2022 {__author__}"
 
 # Python and package requirements
 PYTHON_REQUIRES = ">=3.9, <4"
-INSTALL_REQUIRES = ['kjmarotools @ git+https://github.com/fjmaro/Kjmarotools@main', ]
+INSTALL_REQUIRES = ['kjmarotools', ]
 
 # PyPI classifiers with '__license__' included (https://pypi.org/classifiers/)
 CLASSIFIERS = [__license__,
