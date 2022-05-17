@@ -165,7 +165,8 @@ class RawArranger:
                 damaged = fle2move.relative_to(self.neg_base_path)
                 self.log.warning(f"[RWA] [Integrity] Failure for '{damaged}'")
         if not md5_fails:
-            self.log.info("[RWA] [Integrity] Files integrity verified")
+            self.log.info(
+                "[RWA] [Integrity] Files integrity successfully verified")
         else:
             err_msg = "[RWA] [Integrity] Integrity check failed!! "
             err_msg += "Use a backup to recover the original files damaged"
